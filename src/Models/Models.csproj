@@ -45,6 +45,11 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Counter.cs" />
+    <Compile Include="ICounterOperations.cs" />
+    <Compile Include="Lockout.cs" />
+    <Compile Include="LockoutDef.cs" />
+    <Compile Include="LockoutRuntime.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
