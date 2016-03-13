@@ -108,6 +108,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Infrastructure\ApiController.cs" />
+    <Compile Include="Infrastructure\HttpRequestMessageExtensions.cs" />
     <Compile Include="Models\StatusRequest.cs" />
     <Compile Include="Models\StatusResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
