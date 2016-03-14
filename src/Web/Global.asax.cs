@@ -1,4 +1,5 @@
-﻿using System.Web.Http;
+﻿using System.Configuration;
+using System.Web.Http;
 
 namespace Web
 {
@@ -6,7 +7,7 @@ namespace Web
     {
         protected void Application_Start()
         {
-            UnityConfig.RegisterComponents();  
+            UnityConfig.RegisterComponents(ConfigurationManager.AppSettings["Repository.Strategy"] ?? UnityConfig.Mock);  
             GlobalConfiguration.Configure(WebApiConfig.Register);
         }
     }

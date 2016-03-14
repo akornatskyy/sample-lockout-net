@@ -1,3 +1,5 @@
+using System;
+using System.Reflection;
 using System.Web.Http;
 
 using Microsoft.Practices.Unity;
@@ -12,15 +14,28 @@ namespace Web
 {
     public static class UnityConfig
     {
-        public static void RegisterComponents()
+        public const string Mock = "Mock";
+
+        public static void RegisterComponents(string strategy)
         {
-            var container = new UnityContainer();
-            RegisterRepositories(container);
-            RegisterServices(container);
-            GlobalConfiguration.Configuration.DependencyResolver = new UnityDependencyResolver(container);
+            var c = new UnityContainer();
+            RegisterRepositories(c, strategy);
+            RegisterServices(c);
+            GlobalConfiguration.Configuration.DependencyResolver = new UnityDependencyResolver(c);
         }
 
-        private static void RegisterRepositories(IUnityContainer c)
+        private static void RegisterRepositories(IUnityContainer c, string strategy)
+        {
+            var mi = typeof(UnityConfig).GetMethod("Register" + strategy, BindingFlags.NonPublic | BindingFlags.Static);
+            if (mi == null)
+            {
+                throw new ArgumentOutOfRangeException("strategy", strategy, null);
+            }
+
+            mi.Invoke(null, new object[] { c });
+        }
+
+        private static void RegisterMock(IUnityContainer c)
         {
             c.RegisterType<ICounterRepository, CounterRepository>(new ContainerControlledLifetimeManager());
         }
