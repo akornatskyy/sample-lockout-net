@@ -12,15 +12,15 @@ namespace Service.Bridge
     {
         private static readonly LockoutRuntime StatusLockoutQuota = new LockoutRuntime(new[]
         {
-            new LockoutDef { Key = "Status-Quota: {ip}-", Threshold = 100, Expiration = 15 * 60 },
-            new LockoutDef { Key = "Status-Quota: -{name}", Threshold = 20, Expiration = 5 * 60 },
-            new LockoutDef { Key = "Status-Quota: {ip}-{name}", Threshold = 10, Expiration = 60 }
+            new LockoutDef { Key = "Status-Q1: {ip}", Threshold = 100, Expiration = 15 * 60 },
+            new LockoutDef { Key = "Status-Q2: {name}", Threshold = 20, Expiration = 5 * 60 },
+            new LockoutDef { Key = "Status-Q3: {ip}-{name}", Threshold = 10, Expiration = 60 }
         });
 
         private static readonly LockoutRuntime StatusLockoutGuard = new LockoutRuntime(new[]
         {
-            new LockoutDef { Key = "Status-Guard: -{name}", Threshold = 10, Expiration = 5 * 60 },
-            new LockoutDef { Key = "Status-Guard: {ip}-{name}", Threshold = 4, Expiration = 60 }
+            new LockoutDef { Key = "Status-G1: {name}", Threshold = 10, Expiration = 5 * 60 },
+            new LockoutDef { Key = "Status-G2: {ip}-{name}", Threshold = 4, Expiration = 60 }
         });
 
         private readonly ICounterRepository counterRepository;
