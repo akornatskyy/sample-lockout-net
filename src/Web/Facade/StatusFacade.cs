@@ -34,7 +34,11 @@ namespace Web.Facade
             // Simulate an error
             if (Rnd.Next(10) > 5)
             {
-                await this.lockoutService.StatusGuard(request.LockoutContext);
+                if (await this.lockoutService.StatusGuard(request.LockoutContext))
+                {
+                    return StatusResponse.Locked;
+                }
+
                 return null;
             }
 

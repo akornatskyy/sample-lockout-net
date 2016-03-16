@@ -19,14 +19,14 @@ namespace Models
         public async Task<bool> Check()
         {
             var value = await this.Counter.GetValue();
-            return value > this.threshold;
+            return value >= this.threshold;
         }
 
         [DebuggerStepThrough]
         public async Task<bool> Guard()
         {
             var value = await this.Counter.Increment();
-            return value > this.threshold;
+            return value >= this.threshold;
         }
     }
 }
