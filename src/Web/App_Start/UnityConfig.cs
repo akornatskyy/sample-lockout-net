@@ -1,12 +1,12 @@
 using System;
 using System.Reflection;
 using System.Web.Http;
-
+using Couchbase;
+using Couchbase.Core;
 using Microsoft.Practices.Unity;
 using Unity.WebApi;
 
 using Repository.Interface;
-using Repository.Mock;
 using Service.Bridge;
 using Service.Interface;
 
@@ -37,7 +37,18 @@ namespace Web
 
         private static void RegisterMock(IUnityContainer c)
         {
-            c.RegisterType<ICounterRepository, CounterRepository>(new ContainerControlledLifetimeManager());
+            c.RegisterType<ICounterRepository, Repository.Mock.CounterRepository>(new ContainerControlledLifetimeManager());
+        }
+
+        private static void RegisterCouchbase(IUnityContainer c)
+        {
+            ICluster cluster = new Cluster("couchbaseClient/couchbase");
+            c.RegisterInstance(cluster);
+            c.RegisterInstance("cache", cluster.OpenBucket());
+
+            c.RegisterType<ICounterRepository, Repository.Couchbase.CounterRepository>(
+                 new ContainerControlledLifetimeManager(),
+                 new InjectionConstructor(new ResolvedParameter<IBucket>("cache")));
         }
 
         private static void RegisterServices(IUnityContainer c)
