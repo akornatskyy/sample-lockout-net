@@ -18,7 +18,7 @@ namespace Models
             foreach (var d in this.defs)
             {
                 var l = new Lockout(
-                    new Counter(counterOperations, this.MakeKey(d.Key, context), d.Expiration),
+                    new Counter(counterOperations, LockoutRuntime.MakeKey(d.Key, context), d.Expiration),
                     d.Threshold);
                 if (await l.Check())
                 {
@@ -34,12 +34,12 @@ namespace Models
             var result = await Task.WhenAll(
                 from d in this.defs
                 select new Lockout(
-                    new Counter(counterOperations, this.MakeKey(d.Key, context), d.Expiration),
+                    new Counter(counterOperations, LockoutRuntime.MakeKey(d.Key, context), d.Expiration),
                     d.Threshold).Guard());
             return result.Any(r => r);
         }
 
-        private string MakeKey(string format, IDictionary<string, string> d)
+        private static string MakeKey(string format, IDictionary<string, string> d)
         {
             var r = format;
             foreach (var pair in d)
