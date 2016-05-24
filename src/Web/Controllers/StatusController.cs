@@ -22,7 +22,8 @@ namespace Web.Controllers
                 User = (ClaimsPrincipal)User,
                 LockoutContext = new Dictionary<string, string>
                 {
-                    { "ip", this.Request.ClientIpAddress() }
+                    { "ip", this.Request.ClientIpAddress() },
+                    { "name", this.User.Identity.Name }
                 }
             });
 

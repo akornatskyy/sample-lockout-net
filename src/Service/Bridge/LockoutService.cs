@@ -30,18 +30,12 @@ namespace Service.Bridge
             this.counterRepository = counterRepository;
         }
 
-        public Task<bool> StatusQuota(IDictionary<string, string> context)
+        public async Task<bool> StatusQuotaOrCheck(IDictionary<string, string> context)
         {
             Debug.Assert(context.ContainsKey("name"), "name");
             Debug.Assert(context.ContainsKey("ip"), "ip");
-            return LockoutService.StatusLockoutQuota.Guard(this.counterRepository, context);
-        }
-
-        public Task<bool> StatusCheck(IDictionary<string, string> context)
-        {
-            Debug.Assert(context.ContainsKey("name"), "name");
-            Debug.Assert(context.ContainsKey("ip"), "ip");
-            return LockoutService.StatusLockoutGuard.Check(this.counterRepository, context);
+            return await LockoutService.StatusLockoutQuota.Guard(this.counterRepository, context) || 
+                await LockoutService.StatusLockoutGuard.Check(this.counterRepository, context);
         }
 
         public Task<bool> StatusGuard(IDictionary<string, string> context)

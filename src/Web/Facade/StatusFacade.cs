@@ -19,14 +19,7 @@ namespace Web.Facade
 
         public async Task<StatusResponse> RefreshStatus(StatusRequest request)
         {
-            var identity = request.User.Identity;
-            request.LockoutContext["name"] = identity.Name;
-            if (await this.lockoutService.StatusQuota(request.LockoutContext))
-            {
-                return StatusResponse.Locked;
-            }
-
-            if (await this.lockoutService.StatusCheck(request.LockoutContext))
+            if (await this.lockoutService.StatusQuotaOrCheck(request.LockoutContext))
             {
                 return StatusResponse.Locked;
             }
@@ -44,7 +37,7 @@ namespace Web.Facade
 
             return new StatusResponse
             {
-                IsAuthenticated = identity.IsAuthenticated,
+                IsAuthenticated = request.User.Identity.IsAuthenticated,
                 IpAddress = request.LockoutContext["ip"]
             };
         }
