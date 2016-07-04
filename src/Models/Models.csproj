@@ -47,9 +47,10 @@
     </Compile>
     <Compile Include="Counter.cs" />
     <Compile Include="ICounterOperations.cs" />
-    <Compile Include="Lockout.cs" />
     <Compile Include="LockoutDef.cs" />
-    <Compile Include="LockoutRuntime.cs" />
+    <Compile Include="LockoutKey.cs" />
+    <Compile Include="LockoutQuota.cs" />
+    <Compile Include="LockoutGuard.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

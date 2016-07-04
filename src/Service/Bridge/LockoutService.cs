@@ -10,14 +10,14 @@ namespace Service.Bridge
 {
     public sealed class LockoutService : ILockoutService
     {
-        private static readonly LockoutRuntime StatusLockoutQuota = new LockoutRuntime(new[]
+        private static readonly LockoutQuota StatusLockoutQuota = new LockoutQuota(new[]
         {
             new LockoutDef { Key = "Status-Q1: {ip}", Threshold = 100, Expiration = 15 * 60 },
             new LockoutDef { Key = "Status-Q2: {name}", Threshold = 20, Expiration = 5 * 60 },
             new LockoutDef { Key = "Status-Q3: {ip}-{name}", Threshold = 10, Expiration = 60 }
         });
 
-        private static readonly LockoutRuntime StatusLockoutGuard = new LockoutRuntime(new[]
+        private static readonly LockoutGuard StatusLockoutGuard = new LockoutGuard(new[]
         {
             new LockoutDef { Key = "Status-G1: {name}", Threshold = 10, Expiration = 5 * 60 },
             new LockoutDef { Key = "Status-G2: {ip}-{name}", Threshold = 4, Expiration = 60 }
@@ -34,7 +34,7 @@ namespace Service.Bridge
         {
             Debug.Assert(context.ContainsKey("name"), "name");
             Debug.Assert(context.ContainsKey("ip"), "ip");
-            return await LockoutService.StatusLockoutQuota.Guard(this.counterRepository, context) || 
+            return await LockoutService.StatusLockoutQuota.Quota(this.counterRepository, context) || 
                 await LockoutService.StatusLockoutGuard.Check(this.counterRepository, context);
         }
 

@@ -4,11 +4,11 @@ using System.Threading.Tasks;
 
 namespace Models
 {
-    public sealed class LockoutRuntime
+    public sealed class LockoutGuard
     {
         private readonly LockoutDef[] defs;
 
-        public LockoutRuntime(LockoutDef[] defs)
+        public LockoutGuard(LockoutDef[] defs)
         {
             this.defs = defs;
         }
@@ -17,10 +17,8 @@ namespace Models
         {
             foreach (var d in this.defs)
             {
-                var l = new Lockout(
-                    new Counter(counterOperations, LockoutRuntime.MakeKey(d.Key, context), d.Expiration),
-                    d.Threshold);
-                if (await l.Check())
+                var c = new Counter(counterOperations, LockoutKey.MakeKey(d.Key, context), d.Expiration);
+                if (await c.GetValue() >= d.Threshold)
                 {
                     return true;
                 }
@@ -33,21 +31,15 @@ namespace Models
         {
             var result = await Task.WhenAll(
                 from d in this.defs
-                select new Lockout(
-                    new Counter(counterOperations, LockoutRuntime.MakeKey(d.Key, context), d.Expiration),
-                    d.Threshold).Guard());
+                select this.IncrementAndCheck(
+                    new Counter(counterOperations, LockoutKey.MakeKey(d.Key, context), d.Expiration),
+                    d.Threshold));
             return result.Any(r => r);
         }
 
-        private static string MakeKey(string format, IDictionary<string, string> d)
+        private async Task<bool> IncrementAndCheck(Counter counter, int threshold)
         {
-            var r = format;
-            foreach (var pair in d)
-            {
-                r = r.Replace("{" + pair.Key + "}", pair.Value);
-            }
-
-            return r;
+            return await counter.Increment() >= threshold;
         }
     }
 }
